@@ -47,8 +47,52 @@ class Korisnici:
             # stanje_racuna=stanje_racuna.astype(float)
             return broj_racuna,stanje_racuna
 
-    def uplata(self,broj_racuna,stanje_racuna,broj_racuna_primaoca,iznos):
-        pass
+    def uplata(self,broj_racuna,stanje_racuna,broj_racuna_primaoca,iznos,naziv_posiljaoca):
+        if stanje_racuna>=iznos:
+            stanje_racuna-=iznos
+            self.korisnici_df=pd.read_sql('SELECT * FROM KORISNICI',con=self.con)
+            cursor=self.con.cursor()
+            s="UPDATE KORISNICI SET STANJE = {} WHERE KORISNICI.BROJ_RACUNA = '{}';".format(stanje_racuna,broj_racuna)            
+            cursor.execute(s)
+            self.con.commit()
+            cursor.close()
+
+
+            tacno=broj_racuna_primaoca in set(self.korisnici_df['broj_racuna'])
+            print(tacno)
+            pom=0
+            for i in range(len(self.korisnici_df['broj_racuna'])):
+                if broj_racuna== self.korisnici_df.iloc['broj_racuna'][i]:
+                    pom=1
+                    i_pom=i
+            if pom==0:
+                pyauto.alert('Neispravan broj racuna za uplatu!')
+                return exit()
+        
+            else:
+                broj_racuna_primaoca=k.import_from_sql().iloc[i_pom][0]
+                print(broj_racuna_primaoca)
+                stanje_racuna_primaoca=k.import_from_sql().iloc[i_pom][2]
+                print(stanje_racuna_primaoca)
+                naziv_primaoca=k.import_from_sql().iloc[i_pom][1]
+                print(naziv_primaoca)
+
+            
+            if tacno:
+                stanje_racuna_primaoca+=iznos
+                self.korisnici_df=pd.read_sql('SELECT * FROM KORISNICI',con=self.con)
+                cursor=self.con.cursor()
+                s="UPDATE KORISNICI SET STANJE = {} WHERE KORISNICI.BROJ_RACUNA = '{}';".format(stanje_racuna_primaoca,broj_racuna_primaoca)            
+                cursor.execute(s)
+                self.con.commit()
+                cursor.close()
+
+                tr.dodaj_transakciju(naziv_posiljaoca,naziv_primaoca,broj_racuna,broj_racuna_primaoca,iznos)
+                return 'Uspesno ste izvrsili uplatu!'
+            else:
+                return 'Nepostojeci broj racuna! OK za exit'
+        else:
+            return 'Nemate dovoljno sretstava na racunu!'
     
     def close_connection(self):
         self.con.close()
@@ -73,8 +117,14 @@ class Transakcije:
         self.transakcije_df.to_excel('Transakcije.xlsx',index=False)
         return 'File succesfully exported'
     
-    def dodaj_transakciju(self,broj_racuna,stanje_racuna,broj_racuna_primaoca,iznos):
-        pass
+    def dodaj_transakciju(self,naziv_posiljaoca,naziv_primaoca,broj_racuna,broj_racuna_primaoca,iznos):
+        self.transakcije_df=pd.read_sql('SELECT * FROM TRANSAKCIJE',con=self.con)
+        cursor=self.con.cursor()
+        s="INSERT INTO TRANSAKCIJE(naziv_posiljaoca,naziv_primaoca,broj_racuna,broj_racuna_primaoca,iznos) VALUES ('{}','{}','{}','{}',{});".format(naziv_posiljaoca,naziv_primaoca,broj_racuna,broj_racuna_primaoca,iznos)            
+        cursor.execute(s)
+        self.con.commit()
+        cursor.close()
+
     
     def close_connection(self):
         self.con.close()
