@@ -59,23 +59,37 @@ class Korisnici:
 
 
             tacno=broj_racuna_primaoca in set(self.korisnici_df['broj_racuna'])
-            print(tacno)
-            pom=0
-            for i in range(len(self.korisnici_df['broj_racuna'])):
-                if broj_racuna== self.korisnici_df.iloc['broj_racuna'][i]:
-                    pom=1
-                    i_pom=i
-            if pom==0:
-                pyauto.alert('Neispravan broj racuna za uplatu!')
-                return exit()
+            
+            primalac = self.korisnici_df[self.korisnici_df['broj_racuna'] == broj_racuna_primaoca]
+            primalac=pd.DataFrame(primalac)
+            print(primalac)
+            broj_racuna_primaoca=primalac.loc[0]['broj_racuna']
+            stanje_racuna_primaoca=primalac.loc[2]['broj_racuna']
+            naziv_primaoca=primalac.loc[1]['broj_racuna']
+
+            
+            # print(primalac[0])
+
+            # stanje_racuna_primaoca = primalac[3]
+            # print(tacno)
+            # pom=0
+            # for i in range(len(self.korisnici_df.index)):
+            #     if broj_racuna== self.korisnici_df["broj_racuna"].values[i]:
+            #         print(self.korisnici_df["broj_racuna"].values[i])
+            #         print(broj_racuna)
+            #         pom=1
+            #         i_pom=i
+            # if pom==0:
+            #     pyauto.alert('Neispravan broj racuna za uplatu!')
+            #     return exit()
         
-            else:
-                broj_racuna_primaoca=k.import_from_sql().iloc[i_pom][0]
-                print(broj_racuna_primaoca)
-                stanje_racuna_primaoca=k.import_from_sql().iloc[i_pom][2]
-                print(stanje_racuna_primaoca)
-                naziv_primaoca=k.import_from_sql().iloc[i_pom][1]
-                print(naziv_primaoca)
+            # else:
+            #     broj_racuna_primaoca=k.import_from_sql().iloc[i_pom][0]
+            #     print(broj_racuna_primaoca)
+            #     stanje_racuna_primaoca=k.import_from_sql().iloc[i_pom][2]
+            #     print(stanje_racuna_primaoca)
+            #     naziv_primaoca=k.import_from_sql().iloc[i_pom][1]
+            #     print(naziv_primaoca)
 
             
             if tacno:

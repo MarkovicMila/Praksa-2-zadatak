@@ -52,7 +52,7 @@ def uplati_na_racun(broj_racuna,stanje_racuna,naziv_posiljaoca):
 	iznos=Entry(t)
 	iznos.grid(row=1, column=1)
 	
-	uplati=Button(t,text='Izvrsi uplatu',command=lambda:[k.uplata(broj_racuna,float(stanje_racuna),str(broj_racuna_primaoca.get()),float(iznos.get()),naziv_posiljaoca),quit()])
+	uplati=Button(t,text='Izvrsi uplatu',command=lambda:k.uplata(broj_racuna,float(stanje_racuna),str(broj_racuna_primaoca.get()),float(iznos.get()),naziv_posiljaoca))
 	uplati.grid(row=2,column=1)										
 
 
